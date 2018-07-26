@@ -93,6 +93,21 @@ cc.Class({
 
         // 初始化键盘输入监听
         this.setInputControl();
+
+        cc.systemEvent.setAccelerometerEnabled(true);
+        cc.systemEvent.on(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
+    },
+    onDeviceMotionEvent: function onDeviceMotionEvent(event) {
+        if (event.acc.x < -0.1) {
+            this.accLeft = true;
+            this.accRight = false;
+        } else if (event.acc.x > 0.1) {
+            this.accRight = true;
+            this.accLeft = false;
+        } else {
+            this.accLeft = false;
+            this.accRight = false;
+        }
     },
     update: function update(dt) {
         // 根据当前加速度方向每帧更新速度
@@ -108,12 +123,17 @@ cc.Class({
         }
 
         // 根据当前速度更新主角的位置
-        this.node.x += this.xSpeed * dt;
+        if (this.node.x + this.xSpeed * dt > cc.view.getVisibleSize.width) {
+            this.node.x = cc.view.getVisibleSize.width;
+        } else {
+            this.node.x += this.xSpeed * dt;
+        }
+    },
+    onDestroy: function onDestroy() {
+        cc.systemEvent.setAccelerometerEnabled(false);
+        cc.systemEvent.off(cc.SystemEvent.EventType.DEVICEMOTION, this.onDeviceMotionEvent, this);
     }
-}
-
-// update (dt) {},
-);
+});
 
 cc._RF.pop();
         }
