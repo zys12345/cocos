@@ -3,8 +3,4 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-local/logs/*
-local/layout.windows.json
 build/*
-local/builder.json
-settings/builder.json
